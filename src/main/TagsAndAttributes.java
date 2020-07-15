@@ -23,18 +23,228 @@ public class TagsAndAttributes {
 			nextAction = input.nextLine().toLowerCase();
 			
 			switch(nextAction) {
+				case "showa":		show(input, "attribute");break;
+				case "showt":		show(input, "tag");break;
 				case "combine":		combine(input); break;
-				case "done": 		isDone = isDone(); break;
 				case "addt": 		addComponent(input,"tag"); break;
 				case "adda": 		addComponent(input, "attribute"); break;	
 				case "addtd":		addComponentDescription(input,"tag"); break;
 				case "addad":		addComponentDescription(input, "attribute");break;
+				case "done": 		isDone = isDone(); break;
 				default: 			System.out.println("I do not recognize that command");
 			}
 		}
 		input.close();
 	}
 
+	
+	private static void show(Scanner input, String type) {
+		Component c;
+		String name;
+		
+		System.out.println("Which " + type + " would you like to show?");
+		name = input.nextLine();
+		
+		c = getComponent(name, type);
+		
+		if(c == null) {
+			System.out.println(name + " is not a valid " + type + ".");
+			return;
+		}
+		
+		System.out.println(c.detailedOutput());
+		
+		
+	}
+
+	private static void combine(Scanner input) {//adds a tag and an attribute to each other
+		String fullText;
+		int colonPlace;
+		String tagString;
+		String attributeString;
+		Tag tag;
+		Attribute attribute;
+		boolean isDone = false;
+		
+		while(!isDone) {
+			System.out.println("What would you like to combine?");
+			fullText = input.nextLine();
+			if(fullText.equals("exit")) {
+				break;
+			}
+			colonPlace = fullText.indexOf(':');
+			if(colonPlace == -1) {
+				System.out.println("Please Use the Format tag:attribute");
+				continue;
+			}
+			tagString = fullText.substring(0, colonPlace);
+			attributeString = fullText.substring(colonPlace+1);
+			tag = (Tag)getComponent(tagString,"tag");
+			attribute = (Attribute)getComponent(attributeString,"attribute");
+			
+			if(tag==null) {
+				System.out.println("Tag not found");
+				continue;
+			}else if(attribute == null) {
+				System.out.println("Attribute not found");
+				continue;
+			}else if(tag.contains(attribute)) {
+				System.out.println(tag + " already contains " + attribute);
+				continue;
+			}
+			
+			tag.addAttribute(attribute);
+			attribute.addTag(tag);
+			isDone = true;
+		}
+	}
+	
+	private static void addComponent(Scanner input, String type) {
+		String name = "";
+		Component component;
+		boolean invalid = true;
+		
+		while(invalid) {
+			System.out.println("What " + type + " would you like to add?");
+			name = input.nextLine();
+			invalid = isInvalid(name);
+			
+			if(name.toUpperCase().equals("NONE")) {
+				try {
+					return;
+				}catch(Exception e) {}
+			}
+			
+		}
+		
+		if(type.equals("tag")) {
+			component = new Tag(name);
+		}else {
+			component = new Attribute(name);
+		}
+		
+		if(tags.contains(component)||attributes.contains(component)) {
+			System.out.println(type + " " + name + " already exists");
+			try {
+				return;
+			}catch(Exception e) {}
+		}
+		
+		findOrder(component,type);
+	}
+
+	private static void addComponentDescription(Scanner input,String type) {
+		String fullText;
+		String componentName;
+		String description;
+		boolean isDone = false;
+		Component component;
+		
+		while(!isDone) {
+			System.out.println("What " + type + " description do you wish to add?");
+			fullText = input.nextLine();
+			int colonPlace = fullText.indexOf(':');
+			
+			if(fullText.equals("exit")) {
+				break;
+			}
+			
+			if(colonPlace == -1) {
+				System.out.println("Please use the format [tagName]:[description] (no spaces around colon)\n");
+				continue;
+			}
+			
+			componentName = fullText.substring(0, colonPlace);
+			description = fullText.substring(colonPlace+1);
+			component = getComponent(componentName,type);	
+			
+			if(isInvalid(description)) {
+				continue;
+			}
+			
+			if(component == null) {
+				System.out.println(type + " not found");
+				continue;
+			}
+			
+			component.setDescription(description);
+			isDone = true;
+		}
+	}
+	
+	
+	
+
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static void findOrder(Component c, String type) {
+		String name = c.getName();
+		boolean added = false;
+		
+		ArrayList list;
+		if(type.equals("tag")){
+			list = tags;
+		}else {
+			list = attributes;
+		}
+		int size = list.size();
+		
+		for(int i = 0; i<size; i ++) {//adds to the list in alphabetical order
+			if(name.compareToIgnoreCase(((Component)list.get(i)).getName())<0) {
+				list.add(i, c);
+				added = true;
+				break;
+			}
+		}
+		
+		if(!added) {			//adds to the end of the list if it is the last alphabetically
+			list.add(c);
+		}		
+	}
+	
+	private static boolean isInvalid(String check) {
+		String[] illegals = {"#", ":", ";", "[", "]", ","};
+		for(String illegal: illegals) {
+			if(check.contains(illegal)) {
+				System.out.println("ERROR! Cannot contain {\"#\", \":\", \";\", \"[\", \"]\", \",\"}");
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private static boolean isDone() { //checks to see if there are any null descriptions.
+		ArrayList<String> nullDescription = new ArrayList<String>();
+		boolean isDone = true;
+		
+		for(Attribute attribute: attributes) {
+			if(attribute.getDescription() == null) {
+				nullDescription.add(attribute.getName());
+				isDone = false;
+			}
+		}
+		
+		for(Tag tag: tags) {
+			if(tag.getDescription() == null) {
+				nullDescription.add(tag.getName());
+				isDone = false;
+			}
+		}
+		
+		if(!isDone) {
+			System.out.println("ERROR!");
+			System.out.println(nullDescription + " has no description!");
+		}
+		
+		return isDone;
+	}
+	
+	
+	
+	
+	
+	
 	private static void readfile() throws IOException {
 		FileReader frTag = new FileReader("Tags.txt");
 		FileReader frAtt = new FileReader("Attributes.txt");
@@ -159,188 +369,6 @@ public class TagsAndAttributes {
 		attributeFile.close();
 		tagFile.close();
 	}
-	
-	private static void addComponentDescription(Scanner input,String type) {
-		String fullText;
-		String componentName;
-		String description;
-		boolean isDone = false;
-		Component component;
-		
-		while(!isDone) {
-			System.out.println("What " + type + " description do you wish to add?");
-			fullText = input.nextLine();
-			int colonPlace = fullText.indexOf(':');
-			
-			if(fullText.equals("exit")) {
-				break;
-			}
-			
-			if(colonPlace == -1) {
-				System.out.println("Please use the format [tagName]:[description] (no spaces around colon)\n");
-				continue;
-			}
-			
-			componentName = fullText.substring(0, colonPlace);
-			description = fullText.substring(colonPlace+1);
-			component = getComponent(componentName,type);	
-			
-			if(isInvalid(description)) {
-				continue;
-			}
-			
-			if(component == null) {
-				System.out.println(type + " not found");
-				continue;
-			}
-			
-			component.setDescription(description);
-			isDone = true;
-		}
-	}
-	
-	private static void addComponent(Scanner input, String type) {
-		String name = "";
-		Component component;
-		boolean invalid = true;
-		
-		while(invalid) {
-			System.out.println("What " + type + " would you like to add?");
-			name = input.nextLine();
-			invalid = isInvalid(name);
-			
-			if(name.toUpperCase().equals("NONE")) {
-				try {
-					return;
-				}catch(Exception e) {}
-			}
-			
-		}
-		
-		if(type.equals("tag")) {
-			component = new Tag(name);
-		}else {
-			component = new Attribute(name);
-		}
-		
-		if(tags.contains(component)||attributes.contains(component)) {
-			System.out.println(type + " " + name + " already exists");
-			try {
-				return;
-			}catch(Exception e) {}
-		}
-		
-		findOrder(component,type);
-	}
-	
-
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static void findOrder(Component c, String type) {
-		String name = c.getName();
-		boolean added = false;
-		
-		ArrayList list;
-		if(type.equals("tag")){
-			list = tags;
-		}else {
-			list = attributes;
-		}
-		int size = list.size();
-		
-		for(int i = 0; i<size; i ++) {
-			if(name.compareToIgnoreCase(((Component)list.get(i)).getName())<0) {
-				list.add(i, c);
-				added = true;
-				break;
-			}
-		}
-		
-		if(!added) {
-			list.add(c);
-		}		
-	}
-	
-	private static boolean isInvalid(String check) {
-		String[] illegals = {"#", ":", ";", "[", "]", ","};
-		for(String illegal: illegals) {
-			if(check.contains(illegal)) {
-				System.out.println("ERROR! Cannot contain {\"#\", \":\", \";\", \"[\", \"]\", \",\"}");
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private static boolean isDone() { //checks to see if there are any null descriptions.
-		ArrayList<String> nullDescription = new ArrayList<String>();
-		boolean isDone = true;
-		
-		for(Attribute attribute: attributes) {
-			if(attribute.getDescription() == null) {
-				nullDescription.add(attribute.getName());
-				isDone = false;
-			}
-		}
-		
-		for(Tag tag: tags) {
-			if(tag.getDescription() == null) {
-				nullDescription.add(tag.getName());
-				isDone = false;
-			}
-		}
-		
-		if(!isDone) {
-			System.out.println("ERROR!");
-			System.out.println(nullDescription + " has no description!");
-		}
-		
-		return isDone;
-	}
-	
-	private static void combine(Scanner input) {//adds a tag and an attribute to each other
-		String fullText;
-		int colonPlace;
-		String tagString;
-		String attributeString;
-		Tag tag;
-		Attribute attribute;
-		boolean isDone = false;
-		
-		while(!isDone) {
-			System.out.println("What would you like to combine?");
-			fullText = input.nextLine();
-			if(fullText.equals("exit")) {
-				break;
-			}
-			colonPlace = fullText.indexOf(':');
-			if(colonPlace == -1) {
-				System.out.println("Please Use the Format tag:attribute");
-				continue;
-			}
-			tagString = fullText.substring(0, colonPlace);
-			attributeString = fullText.substring(colonPlace+1);
-			tag = (Tag)getComponent(tagString,"tag");
-			attribute = (Attribute)getComponent(attributeString,"attribute");
-			
-			if(tag==null) {
-				System.out.println("Tag not found");
-				continue;
-			}else if(attribute == null) {
-				System.out.println("Attribute not found");
-				continue;
-			}else if(tag.contains(attribute)) {
-				System.out.println(tag + " already contains " + attribute);
-				continue;
-			}
-			
-			tag.addAttribute(attribute);
-			attribute.addTag(tag);
-			isDone = true;
-		}
-	}
-	
 	
 	private static Component getComponent(String tagName, String type) {
 		Component retrieving = new Component(tagName);
