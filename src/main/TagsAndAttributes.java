@@ -313,37 +313,6 @@ public class TagsAndAttributes {
 		return false;
 	}
 	
-	private static boolean isDone() { //checks to see if there are any null descriptions.
-		ArrayList<String> nullDescription = new ArrayList<String>();
-		boolean isDone = true;
-		
-		for(Attribute attribute: attributes) {
-			if(attribute.getDescription() == null) {
-				nullDescription.add(attribute.getName());
-				isDone = false;
-			}
-		}
-		
-		for(Tag tag: tags) {
-			if(tag.getDescription() == null) {
-				nullDescription.add(tag.getName());
-				isDone = false;
-			}
-		}
-		
-		if(!isDone) {
-			System.out.println("ERROR!");
-			System.out.println(nullDescription + " has no description!");
-		}
-		
-		return isDone;
-	}
-	
-	
-	
-	
-	
-	
 	private static void readfile() throws IOException {
 		FileReader frTag = new FileReader("Tags.txt");
 		FileReader frAtt = new FileReader("Attributes.txt");
