@@ -27,6 +27,7 @@ public class TagsAndAttributes {
 				case "deletet":		delete(input, "tag");break;
 				case "showa":		show(input, "attribute");break;
 				case "showt":		show(input, "tag");break;
+				case "showall":		showAll();
 				case "combine":		combine(input); break;
 				case "addt": 		addComponent(input,"tag"); break;
 				case "divorce":		divorce(input);break;
@@ -91,6 +92,11 @@ public class TagsAndAttributes {
 		System.out.println(c.detailedOutput());
 		
 		
+	}
+	
+	private static void showAll() {
+		System.out.println("Tags: " + tags);
+		System.out.println("Attributes " + attributes);
 	}
 
 	private static void combine(Scanner input) {//adds a tag and an attribute to each other
