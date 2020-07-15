@@ -1,5 +1,6 @@
 package main.components;
 
+import java.util.ArrayList;
 
 public class Component implements Cloneable{
 	String name;
@@ -8,6 +9,9 @@ public class Component implements Cloneable{
 	public Component(String name) {
 		this.name = name;
 	}
+	
+	
+	
 	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
@@ -24,9 +28,18 @@ public class Component implements Cloneable{
 		
 		return false;
 	}
-	
+
 	public String getDescription() 							{return description;}
 	public String getName() 								{return name;}
 	public String toString() 								{return name;}
 	public void setDescription(String description) 			{this.description = description;}
+
+
+
+
+	@SuppressWarnings("rawtypes")
+	public ArrayList getPartners() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

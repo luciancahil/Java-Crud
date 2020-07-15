@@ -23,6 +23,8 @@ public class TagsAndAttributes {
 			nextAction = input.nextLine().toLowerCase();
 			
 			switch(nextAction) {
+				case "deletea":		delete(input, "attribute");break;
+				case "deletet":		delete(input, "tag");break;
 				case "showa":		show(input, "attribute");break;
 				case "showt":		show(input, "tag");break;
 				case "combine":		combine(input); break;
@@ -37,6 +39,37 @@ public class TagsAndAttributes {
 		input.close();
 	}
 
+	@SuppressWarnings("unchecked")
+	private static void delete(Scanner input, String type) {
+		String name;
+		Component c;
+		ArrayList<Component> partners;
+		
+		System.out.println("Which " + type + " would you like to delete?");
+		name = input.nextLine();
+		
+		c = getComponent(name, type);
+		
+		if(c == null) {
+			System.out.println(name + " is not a valid " + type + ".");
+			return;
+		}
+		
+		
+		//remove the tag from it's partners lists
+		partners = c.getPartners();
+		
+		for(Component partner: partners) {
+			partner.getPartners().remove(c);
+		}
+		
+		if(type.equals("tag"))
+			tags.remove(c);
+		else
+			attributes.remove(c);
+		
+		System.out.println(name + " has been removed.");
+	}
 	
 	private static void show(Scanner input, String type) {
 		Component c;

@@ -9,6 +9,10 @@ public class Tag extends Component {
 		super(name);
 	}
 	
+	public ArrayList<Attribute> getPartners(){
+		return attributes;
+	}
+	
 	public boolean contains(Attribute a) {
 		if(attributes.indexOf(a) != -1) {
 			return true;

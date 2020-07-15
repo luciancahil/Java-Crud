@@ -1,9 +1,6 @@
 #background: controls background color;
 Attributes: []
 
-#br: line-break;
-Attributes: []
-
 #button: adds clickable button;
 Attributes: []
 

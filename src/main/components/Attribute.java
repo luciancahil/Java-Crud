@@ -9,6 +9,10 @@ public class Attribute extends Component{
 		super(name);
 	}
 	
+	public ArrayList<Tag> getPartners(){
+		return tags;
+	}
+	
 	public String detailedOutput() {
 		return super.detailedOutput() + "Tags: " + tags + "\n";
 	}
