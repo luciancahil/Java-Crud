@@ -1,0 +1,21 @@
+#border-radius: controls natures of an elements corners;
+Tags: []
+
+#border-style: Specifies the style of the border (dotted or dashed or solid or etc);
+Tags: [p]
+
+#color: Controls Text Color;
+Tags: [h1, p]
+
+#font-family: Controls Font Type Used;
+Tags: [p]
+
+#margin: adds blank space around box;
+Tags: []
+
+#padding: adds space inside a box with only background of said box;
+Tags: []
+
+#position: Controls How placement is read (can also "fix" an elemeent);
+Tags: []
+

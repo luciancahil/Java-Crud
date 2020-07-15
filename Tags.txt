@@ -1,0 +1,36 @@
+#background: controls background color;
+Attributes: []
+
+#br: line-break;
+Attributes: []
+
+#button: adds clickable button;
+Attributes: []
+
+#div: A divider that forms a content block;
+Attributes: []
+
+#em: (Emphasis) italics;
+Attributes: []
+
+#h1: Big Header;
+Attributes: [color]
+
+#header: Semantic Tag for Headers;
+Attributes: []
+
+#img: adds image with source text;
+Attributes: []
+
+#p: paragraph;
+Attributes: [border-style, color, font-family]
+
+#section: separate thematic groups to be manipulated with CSS;
+Attributes: []
+
+#Strong: Makes Bold Text;
+Attributes: []
+
+#style: adds css instructions to HTML file;
+Attributes: []
+
