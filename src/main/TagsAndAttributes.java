@@ -29,6 +29,7 @@ public class TagsAndAttributes {
 				case "showt":		show(input, "tag");break;
 				case "combine":		combine(input); break;
 				case "addt": 		addComponent(input,"tag"); break;
+				case "divorce":		divorce(input);break;
 				case "adda": 		addComponent(input, "attribute"); break;	
 				case "addtd":		addComponentDescription(input,"tag"); break;
 				case "addad":		addComponentDescription(input, "attribute");break;
@@ -38,6 +39,8 @@ public class TagsAndAttributes {
 		}
 		input.close();
 	}
+
+	
 
 	@SuppressWarnings("unchecked")
 	private static void delete(Scanner input, String type) {
@@ -130,6 +133,50 @@ public class TagsAndAttributes {
 			attribute.addTag(tag);
 			isDone = true;
 		}
+	}
+	
+	private static void divorce(Scanner input) {
+		Tag t;
+		Attribute a;
+		String fullText;
+		int colonPlace;
+		boolean isDone = false;
+		
+		while(!isDone) {
+			System.out.println("What would you like to divorce?");
+			fullText = input.nextLine();
+			
+			if(fullText.equals("exit")) {
+				break;
+			}
+			
+			colonPlace = fullText.indexOf(':');
+			if(colonPlace == -1) {
+				System.out.println("Please Use the Format tag:attribute");
+				return;
+			}
+			t = (Tag)getComponent(fullText.substring(0, colonPlace),"tag");
+			a = (Attribute)getComponent(fullText.substring(colonPlace+1),"attribute");
+			
+			if(t== null) {
+				System.out.println(t + " isn't a valid tag.");
+			}
+			
+			if(a == null) {
+				System.out.println(a + " isn't a valid tag.");
+			}
+			
+			if(t.getPartners().indexOf(a) == -1){
+				System.out.println(t + " isn't matched with " + a + ".");
+				continue;
+			}
+
+			t.getPartners().remove(a);
+			a.getPartners().remove(t);
+			
+			isDone = true;
+		}
+		
 	}
 	
 	private static void addComponent(Scanner input, String type) {
