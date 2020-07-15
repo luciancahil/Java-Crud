@@ -1,3 +1,6 @@
+#background: controls background color;
+Tags: [h1, p]
+
 #border-radius: controls natures of an elements corners;
 Tags: []
 

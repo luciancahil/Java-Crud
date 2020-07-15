@@ -1,6 +1,3 @@
-#background: controls background color;
-Attributes: []
-
 #button: adds clickable button;
 Attributes: []
 
@@ -11,7 +8,7 @@ Attributes: []
 Attributes: []
 
 #h1: Big Header;
-Attributes: [color]
+Attributes: [background, color]
 
 #header: Semantic Tag for Headers;
 Attributes: []
@@ -20,7 +17,7 @@ Attributes: []
 Attributes: []
 
 #p: paragraph;
-Attributes: [border-style, color, font-family]
+Attributes: [background, border-style, color, font-family]
 
 #section: separate thematic groups to be manipulated with CSS;
 Attributes: []

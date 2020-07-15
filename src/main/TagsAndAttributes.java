@@ -27,7 +27,7 @@ public class TagsAndAttributes {
 				case "deletet":		delete(input, "tag");break;
 				case "showa":		show(input, "attribute");break;
 				case "showt":		show(input, "tag");break;
-				case "showall":		showAll();
+				case "showall":		showAll();break;
 				case "combine":		combine(input); break;
 				case "addt": 		addComponent(input,"tag"); break;
 				case "divorce":		divorce(input);break;
@@ -186,19 +186,30 @@ public class TagsAndAttributes {
 	}
 	
 	private static void addComponent(Scanner input, String type) {
-		String name = "";
+		String name = null, description = null;
 		Component component;
 		boolean invalid = true;
+		int colonPlace;
+		String fullText;
 		
 		while(invalid) {
 			System.out.println("What " + type + " would you like to add?");
-			name = input.nextLine();
+			fullText = input.nextLine();
+			colonPlace = fullText.indexOf(':');
+			
+			if(colonPlace == -1) {
+				System.out.println("Please use the format [tagName]:[description] (no spaces around colon)\n");
+				continue;
+			}
+			
+			name = fullText.substring(0, colonPlace);
+			description = fullText.substring(colonPlace + 1);
+			
 			invalid = isInvalid(name);
+			invalid = isInvalid(description);
 			
 			if(name.toUpperCase().equals("NONE")) {
-				try {
-					return;
-				}catch(Exception e) {}
+				return;
 			}
 			
 		}
@@ -216,7 +227,9 @@ public class TagsAndAttributes {
 			}catch(Exception e) {}
 		}
 		
-		findOrder(component,type);
+		component.setDescription(description);
+		
+		findOrder(component, type);
 	}
 
 	private static void addComponentDescription(Scanner input,String type) {
