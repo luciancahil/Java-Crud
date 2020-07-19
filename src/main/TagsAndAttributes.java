@@ -34,7 +34,7 @@ public class TagsAndAttributes {
 				case "adda": 		addComponent(input, "attribute"); break;	
 				case "addtd":		addComponentDescription(input,"tag"); break;
 				case "addad":		addComponentDescription(input, "attribute");break;
-				case "done": 		isDone = isDone(); break;
+				case "done": 		isDone = true; break;
 				default: 			System.out.println("I do not recognize that command");
 			}
 		}
