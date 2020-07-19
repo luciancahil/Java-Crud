@@ -1,0 +1,56 @@
+<Attribues>
+	<Attribue>
+		<name>background</name>
+		<description>controls background color</description>
+		<partners>
+			<partner>h1</partner>
+			<partner>p</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>border-radius</name>
+		<description>controls natures of an elements corners</description>
+		<partners>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>border-style</name>
+		<description>Specifies the style of the border (dotted or dashed or solid or etc)</description>
+		<partners>
+			<partner>p</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>color</name>
+		<description>Controls Text Color</description>
+		<partners>
+			<partner>h1</partner>
+			<partner>p</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>font-family</name>
+		<description>Controls Font Type Used</description>
+		<partners>
+			<partner>p</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>margin</name>
+		<description>adds blank space around box</description>
+		<partners>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>padding</name>
+		<description>adds space inside a box with only background of said box</description>
+		<partners>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>position</name>
+		<description>Controls How placement is read (can also "fix" an elemeent)</description>
+		<partners>
+		</partners>
+	</Attribue>
+</Attribues>

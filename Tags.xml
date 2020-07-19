@@ -1,0 +1,68 @@
+<Tags>
+	<Tag>
+		<name>button</name>
+		<description>adds clickable button</description>
+		<partners>
+		</partners>
+	</Tag>
+	<Tag>
+		<name>div</name>
+		<description>A divider that forms a content block</description>
+		<partners>
+		</partners>
+	</Tag>
+	<Tag>
+		<name>em</name>
+		<description>(Emphasis) italics</description>
+		<partners>
+		</partners>
+	</Tag>
+	<Tag>
+		<name>h1</name>
+		<description>Big Header</description>
+		<partners>
+			<partner>background</partner>
+			<partner>color</partner>
+		</partners>
+	</Tag>
+	<Tag>
+		<name>header</name>
+		<description>Semantic Tag for Headers</description>
+		<partners>
+		</partners>
+	</Tag>
+	<Tag>
+		<name>img</name>
+		<description>adds image with source text</description>
+		<partners>
+		</partners>
+	</Tag>
+	<Tag>
+		<name>p</name>
+		<description>paragraph</description>
+		<partners>
+			<partner>background</partner>
+			<partner>border-style</partner>
+			<partner>color</partner>
+			<partner>font-family</partner>
+		</partners>
+	</Tag>
+	<Tag>
+		<name>section</name>
+		<description>separate thematic groups to be manipulated with CSS</description>
+		<partners>
+		</partners>
+	</Tag>
+	<Tag>
+		<name>Strong</name>
+		<description>Makes Bold Text</description>
+		<partners>
+		</partners>
+	</Tag>
+	<Tag>
+		<name>style</name>
+		<description>adds css instructions to HTML file</description>
+		<partners>
+		</partners>
+	</Tag>
+</Tags>

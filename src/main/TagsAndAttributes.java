@@ -420,10 +420,12 @@ public class TagsAndAttributes {
 	private static void writeOutput() throws IOException{
 		System.out.println(tags);
 		System.out.println(attributes);
+		writeXML();
 		FileWriter fwTag = new FileWriter("Tags.txt");
 		FileWriter fwAttribute = new FileWriter("Attributes.txt");
 		BufferedWriter tagFile = new BufferedWriter(fwTag);
 		BufferedWriter attributeFile = new BufferedWriter(fwAttribute);
+		
 		
 		for(Tag tag: tags) {
 			String outputThis = tag.detailedOutput();
@@ -458,5 +460,38 @@ public class TagsAndAttributes {
 		
 		return retrieving;
 	}
-
+	
+	private static void writeXML() throws IOException {
+		FileWriter fwTag = new FileWriter("Tags.xml");
+		FileWriter fwAttribute = new FileWriter("Attributes.xml");
+		BufferedWriter tagFile = new BufferedWriter(fwTag);
+		BufferedWriter attributeFile = new BufferedWriter(fwAttribute);
+		
+		tagFile.write("<Tags>\n");
+		for(Tag tag: tags) {
+			writeXMLComponent(tag, "Tag", tagFile);
+		}
+		tagFile.write("</Tags>");
+		
+		attributeFile.write("<Attribues>\n");
+		for(Attribute attribute: attributes) {
+			writeXMLComponent(attribute, "Attribue", attributeFile);
+		}
+		attributeFile.write("</Attribues>");
+		
+		tagFile.close();
+		attributeFile.close();
+	}
+	
+	private static void writeXMLComponent(Component c, String type, BufferedWriter bw) throws IOException {
+		bw.write("\t<" + type + ">\n");
+		bw.write("\t\t<name>" + c.toString() + "</name>\n");
+		bw.write("\t\t<description>" + c.getDescription() + "</description>\n");
+		bw.write("\t\t<partners>\n");
+		for(Object partner: c.getPartners()) {
+			bw.write("\t\t\t<partner>" + partner.toString() + "</partner>\n");
+		}
+		bw.write("\t\t</partners>\n");
+		bw.write("\t</" + type + ">\n");
+	}
 }
