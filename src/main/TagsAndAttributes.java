@@ -6,6 +6,8 @@ import java.util.*;
 public class TagsAndAttributes {
 	static ArrayList<Tag> tags = new ArrayList<Tag>();
 	static ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+	static ArrayList<Tag> tagsXML = new ArrayList<Tag>();
+	static ArrayList<Attribute> attributesXML = new ArrayList<Attribute>();
 
 	public static void main(String[] args) throws IOException {
 		readfile();
@@ -324,7 +326,7 @@ public class TagsAndAttributes {
 		String aLine = "";
 		String tLine = "";
 		
-		
+		readXML();
 		while((aLine = atts.readLine()) != null) {
 			attributeString += aLine;
 		}
@@ -415,6 +417,52 @@ public class TagsAndAttributes {
 				attributes.add(a);
 			}
 		}
+	}
+	
+	private static void readXML() throws IOException {
+		FileReader frTag = new FileReader("Tags.xml");
+		FileReader frAtt = new FileReader("Attributes.xml");
+		BufferedReader tags = new BufferedReader(frTag);
+		BufferedReader atts = new BufferedReader(frAtt);
+		
+		tags.readLine();			//removes the top <Tags> 
+		atts.readLine();			//removes the top <Attributes>
+		
+		while(!atts.readLine().equalsIgnoreCase("</Attribues>")) {	//removes <Attributes>
+			String nameLine = atts.readLine();
+			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
+			String descLine = atts.readLine();
+			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
+			
+			System.out.println("NameLine: " + nameLine + "||END");
+			System.out.println("DescLine: " + descLine + "||END");
+			while(!atts.readLine().equals("\t\t</partners>")) {
+			}
+			atts.readLine();	//</Attribute>
+		}
+		
+		System.out.println("Tags");
+		
+		while(!tags.readLine().equalsIgnoreCase("</Tags>")) {	//removes <Attribute>
+			String nameLine = tags.readLine();
+			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
+			String descLine = tags.readLine();
+			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
+			String partner;
+			
+			System.out.println("NameLine: " + nameLine);
+			System.out.println("DescLine: " + descLine);
+			tags.readLine();		//removes the <partner> tag
+			while(!(partner = tags.readLine()).equals("\t\t</partners>")) {
+				partner = partner.substring(partner.indexOf('>') + 1, partner.lastIndexOf('<'));
+				System.out.println("Partner: " + partner);
+			}
+			tags.readLine();	//</Tag>
+		}
+		
+		
+		tags.close();
+		atts.close();
 	}
 	
 	private static void writeOutput() throws IOException{
