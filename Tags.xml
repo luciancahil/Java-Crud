@@ -23,6 +23,7 @@
 		<partners>
 			<partner>background</partner>
 			<partner>color</partner>
+			<partner>padding</partner>
 		</partners>
 	</Tag>
 	<Tag>
@@ -45,6 +46,7 @@
 			<partner>border-style</partner>
 			<partner>color</partner>
 			<partner>font-family</partner>
+			<partner>padding</partner>
 		</partners>
 	</Tag>
 	<Tag>

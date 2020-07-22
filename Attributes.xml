@@ -45,6 +45,8 @@
 		<name>padding</name>
 		<description>adds space inside a box with only background of said box</description>
 		<partners>
+			<partner>h1</partner>
+			<partner>p</partner>
 		</partners>
 	</Attribue>
 	<Attribue>

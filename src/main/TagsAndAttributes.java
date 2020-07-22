@@ -6,14 +6,11 @@ import java.util.*;
 public class TagsAndAttributes {
 	static ArrayList<Tag> tags = new ArrayList<Tag>();
 	static ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-	static ArrayList<Tag> tagsXML = new ArrayList<Tag>();
-	static ArrayList<Attribute> attributesXML = new ArrayList<Attribute>();
 
 	public static void main(String[] args) throws IOException {
-		readfile();
-		System.out.println(tags);
+		readXML();
 		inputs();
-		writeOutput();
+		writeXML();
 	}
 	
 	private static void inputs(){
@@ -316,197 +313,6 @@ public class TagsAndAttributes {
 		return false;
 	}
 	
-	private static void readfile() throws IOException {
-		FileReader frTag = new FileReader("Tags.txt");
-		FileReader frAtt = new FileReader("Attributes.txt");
-		BufferedReader tags = new BufferedReader(frTag);
-		BufferedReader atts = new BufferedReader(frAtt);
-
-		String attributeString = "";
-		String tagString = "";
-		String aLine = "";
-		String tLine = "";
-		
-		
-		while((aLine = atts.readLine()) != null) {
-			attributeString += aLine;
-		}
-		seperateComponent(attributeString,"attribute");
-		
-		while((tLine = tags.readLine()) != null) {
-			tagString += tLine;
-		}
-		seperateComponent(tagString,"tag");
-		
-		
-		readXML();
-		tags.close();
-		atts.close();
-	}
-
-	private static void seperateComponent(String component,String type) {//seperates teh text file into individual attributes
-		int hashtagIndex = component.indexOf('#');
-		int nextHashtagIndex = component.indexOf('#', hashtagIndex+1);
-		ArrayList<String> comps = new ArrayList<String>();
-
-		while(nextHashtagIndex != -1) {
-			comps.add(component.substring(hashtagIndex,nextHashtagIndex));
-			hashtagIndex = nextHashtagIndex;
-			nextHashtagIndex = component.indexOf('#', hashtagIndex+1);
-		}
-		
-		comps.add(component.substring(hashtagIndex));
-		
-		addComp(comps,type);
-				
-		if(type.equals("tag"))
-			addPartners(comps);
-	}
-
-
-
-	private static void addPartners(ArrayList<String> comps) {
-		for(String comp: comps) {
-			int colonIndex = comp.indexOf(':');
-			int openBracketIndex = comp.indexOf('[');
-			int closeBracketIndex = comp.indexOf(']');
-			String name = comp.substring(1,colonIndex);
-			String partners = comp.substring(openBracketIndex+1,closeBracketIndex);
-			int commaIndex = partners.indexOf(", ");
-			Tag t = (Tag)getComponent(name, "tag");
-			Attribute partner = new Attribute("test"); 
-			int start = 0;
-			
-			if(partners.contentEquals("")) {//nothing in the arraylists.
-				continue;
-			}
-			
-			if(commaIndex == -1) {//there is only one partner
-				partner = (Attribute)getComponent(partners,"attribute");
-				t.addAttribute(partner);
-				partner.addTag(t);
-				continue;
-			}
-			
-			while(commaIndex != -1) {
-				partner = (Attribute) getComponent(partners.substring(start, commaIndex),"attribute");
-				t.addAttribute(partner);
-				partner.addTag(t);
-				start = commaIndex+2;
-				commaIndex = partners.indexOf(',', commaIndex+1);
-			}
-
-			partner = (Attribute) getComponent(partners.substring(start),"attribute");
-			t.addAttribute(partner);
-			partner.addTag(t);
-		}
-	}
-
-
-	private static void addComp(ArrayList<String> comps,String type) {//adds the components into the arraylist
-		for(String comp: comps) {
-			int colonIndex = comp.indexOf(':');
-			int semicolonIndex = comp.indexOf(';');
-			String componentName = comp.substring(1,colonIndex);
-			String description = comp.substring(colonIndex+2,semicolonIndex);
-			
-			if(type.contentEquals("tag")) {
-				Tag t = new Tag(componentName);
-				t.setDescription(description);
-				tags.add(t);
-			}else {
-				Attribute a = new Attribute(componentName);
-				a.setDescription(description);
-				attributes.add(a);
-			}
-		}
-	}
-	
-	private static void readXML() throws IOException {
-		FileReader frTag = new FileReader("Tags.xml");
-		FileReader frAtt = new FileReader("Attributes.xml");
-		BufferedReader tags = new BufferedReader(frTag);
-		BufferedReader atts = new BufferedReader(frAtt);
-		
-		tags.readLine();			//removes the top <Tags> 
-		atts.readLine();			//removes the top <Attributes>
-		
-		while(!atts.readLine().equalsIgnoreCase("</Attribues>")) {	//removes <Attributes> tag at top of document
-			String nameLine = atts.readLine();
-			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
-			String descLine = atts.readLine();
-			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
-			
-			Attribute a = new Attribute(nameLine);
-			a.setDescription(descLine);
-			
-			attributesXML.add(a);
-			
-			//System.out.println("NameLine: " + nameLine + "||END");
-			//System.out.println("DescLine: " + descLine + "||END");
-			while(!atts.readLine().equals("\t\t</partners>")) {
-			}
-			atts.readLine();	//</Attribute>
-		}
-		System.out.println(attributesXML);
-		System.out.println(attributes);
-		System.out.println("Tags:");
-		
-		while(!tags.readLine().equalsIgnoreCase("</Tags>")) {	//removes <Attribute>
-			String nameLine = tags.readLine();
-			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
-			String descLine = tags.readLine();
-			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
-			String partner;
-			
-			
-			Tag t = new Tag(nameLine);
-			t.setDescription(descLine);
-			
-			
-			//System.out.println("NameLine: " + nameLine);
-			//System.out.println("DescLine: " + descLine);
-			tags.readLine();		//removes the <partner> tag
-			while(!(partner = tags.readLine()).equals("\t\t</partners>")) {
-				partner = partner.substring(partner.indexOf('>') + 1, partner.lastIndexOf('<'));
-				//System.out.println("Partner: " + partner);
-				Attribute a = new Attribute(partner);
-				a = attributesXML.get(attributes.indexOf(a));
-				t.addAttribute(a);
-				a.addTag(t);
-			}
-			
-			tagsXML.add(t);
-			tags.readLine();	//</Tag>
-		}
-		
-		tags.close();
-		atts.close();
-	}
-	
-	private static void writeOutput() throws IOException{
-		System.out.println(tags);
-		System.out.println(attributes);
-		writeXML();
-		FileWriter fwTag = new FileWriter("Tags.txt");
-		FileWriter fwAttribute = new FileWriter("Attributes.txt");
-		BufferedWriter tagFile = new BufferedWriter(fwTag);
-		BufferedWriter attributeFile = new BufferedWriter(fwAttribute);
-		
-		
-		for(Tag tag: tags) {
-			String outputThis = tag.detailedOutput();
-			tagFile.write(outputThis + "\n");
-		}
-		
-		for(Attribute attribute: attributes) {
-			String outputThis = attribute.detailedOutput();
-			attributeFile.write(outputThis + "\n");
-		}
-		attributeFile.close();
-		tagFile.close();
-	}
-	
 	private static Component getComponent(String tagName, String type) {
 		Component retrieving = new Component(tagName);
 		if(type.contentEquals("tag")) {
@@ -526,6 +332,59 @@ public class TagsAndAttributes {
 		}
 		
 		return retrieving;
+	}
+	
+	private static void readXML() throws IOException {
+		FileReader frTag = new FileReader("Tags.xml");
+		FileReader frAtt = new FileReader("Attributes.xml");
+		BufferedReader tagBR = new BufferedReader(frTag);
+		BufferedReader atts = new BufferedReader(frAtt);
+		
+		tagBR.readLine();			//removes the top <Tags> 
+		atts.readLine();			//removes the top <Attributes>
+		
+		while(!atts.readLine().equalsIgnoreCase("</Attribues>")) {	//removes <Attributes> tag at top of document
+			String nameLine = atts.readLine();
+			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
+			String descLine = atts.readLine();
+			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
+			
+			Attribute a = new Attribute(nameLine);
+			a.setDescription(descLine);
+			
+			attributes.add(a);
+			
+			while(!atts.readLine().equals("\t\t</partners>")) {
+			}
+			atts.readLine();	//</Attribute>
+		}
+
+		
+		while(!tagBR.readLine().equalsIgnoreCase("</Tags>")) {	//removes <Attribute>
+			String nameLine = tagBR.readLine();
+			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
+			String descLine = tagBR.readLine();
+			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
+			String partner;
+			
+			
+			Tag t = new Tag(nameLine);
+			t.setDescription(descLine);
+			
+			tagBR.readLine();		//removes the <partner> tag
+			while(!(partner = tagBR.readLine()).equals("\t\t</partners>")) {
+				partner = partner.substring(partner.indexOf('>') + 1, partner.lastIndexOf('<'));
+				Attribute a = (Attribute) getComponent(partner, "at");
+				t.addAttribute(a);
+				a.addTag(t);
+			}
+			
+			tags.add(t);
+			tagBR.readLine();	//</Tag>
+		}
+		
+		tagBR.close();
+		atts.close();
 	}
 	
 	private static void writeXML() throws IOException {
@@ -549,6 +408,8 @@ public class TagsAndAttributes {
 		tagFile.close();
 		attributeFile.close();
 	}
+	
+	
 	
 	private static void writeXMLComponent(Component c, String type, BufferedWriter bw) throws IOException {
 		bw.write("\t<" + type + ">\n");
