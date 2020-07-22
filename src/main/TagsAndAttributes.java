@@ -11,6 +11,7 @@ public class TagsAndAttributes {
 
 	public static void main(String[] args) throws IOException {
 		readfile();
+		System.out.println(tags);
 		inputs();
 		writeOutput();
 	}
@@ -326,7 +327,7 @@ public class TagsAndAttributes {
 		String aLine = "";
 		String tLine = "";
 		
-		readXML();
+		
 		while((aLine = atts.readLine()) != null) {
 			attributeString += aLine;
 		}
@@ -337,6 +338,8 @@ public class TagsAndAttributes {
 		}
 		seperateComponent(tagString,"tag");
 		
+		
+		readXML();
 		tags.close();
 		atts.close();
 	}
@@ -428,20 +431,26 @@ public class TagsAndAttributes {
 		tags.readLine();			//removes the top <Tags> 
 		atts.readLine();			//removes the top <Attributes>
 		
-		while(!atts.readLine().equalsIgnoreCase("</Attribues>")) {	//removes <Attributes>
+		while(!atts.readLine().equalsIgnoreCase("</Attribues>")) {	//removes <Attributes> tag at top of document
 			String nameLine = atts.readLine();
 			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
 			String descLine = atts.readLine();
 			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
 			
-			System.out.println("NameLine: " + nameLine + "||END");
-			System.out.println("DescLine: " + descLine + "||END");
+			Attribute a = new Attribute(nameLine);
+			a.setDescription(descLine);
+			
+			attributesXML.add(a);
+			
+			//System.out.println("NameLine: " + nameLine + "||END");
+			//System.out.println("DescLine: " + descLine + "||END");
 			while(!atts.readLine().equals("\t\t</partners>")) {
 			}
 			atts.readLine();	//</Attribute>
 		}
-		
-		System.out.println("Tags");
+		System.out.println(attributesXML);
+		System.out.println(attributes);
+		System.out.println("Tags:");
 		
 		while(!tags.readLine().equalsIgnoreCase("</Tags>")) {	//removes <Attribute>
 			String nameLine = tags.readLine();
@@ -450,16 +459,26 @@ public class TagsAndAttributes {
 			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
 			String partner;
 			
-			System.out.println("NameLine: " + nameLine);
-			System.out.println("DescLine: " + descLine);
+			
+			Tag t = new Tag(nameLine);
+			t.setDescription(descLine);
+			
+			
+			//System.out.println("NameLine: " + nameLine);
+			//System.out.println("DescLine: " + descLine);
 			tags.readLine();		//removes the <partner> tag
 			while(!(partner = tags.readLine()).equals("\t\t</partners>")) {
 				partner = partner.substring(partner.indexOf('>') + 1, partner.lastIndexOf('<'));
-				System.out.println("Partner: " + partner);
+				//System.out.println("Partner: " + partner);
+				Attribute a = new Attribute(partner);
+				a = attributesXML.get(attributes.indexOf(a));
+				t.addAttribute(a);
+				a.addTag(t);
 			}
+			
+			tagsXML.add(t);
 			tags.readLine();	//</Tag>
 		}
-		
 		
 		tags.close();
 		atts.close();
