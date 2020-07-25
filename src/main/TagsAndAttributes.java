@@ -363,6 +363,8 @@ public class TagsAndAttributes {
 		tagBR.readLine();			//removes the top <Tags> 
 		atts.readLine();			//removes the top <Attributes>
 		
+		
+		//reading the attributes file
 		while(!atts.readLine().equalsIgnoreCase("</Attribues>")) {	//removes <Attributes> tag at top of document
 			String nameLine = atts.readLine();
 			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
@@ -379,7 +381,7 @@ public class TagsAndAttributes {
 			atts.readLine();	//</Attribute>
 		}
 
-		
+		//reading the tags file and combining partners
 		while(!tagBR.readLine().equalsIgnoreCase("</Tags>")) {	//removes <Attribute>
 			String nameLine = tagBR.readLine();
 			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));

@@ -3,12 +3,22 @@
 		<name>button</name>
 		<description>adds clickable button</description>
 		<partners>
+			<partner>border-style</partner>
+			<partner>onclick</partner>
 		</partners>
 	</Tag>
 	<Tag>
 		<name>div</name>
 		<description>A divider that forms a content block</description>
 		<partners>
+			<partner>background</partner>
+			<partner>border-radius</partner>
+			<partner>border-style</partner>
+			<partner>display</partner>
+			<partner>font-size</partner>
+			<partner>font-weight</partner>
+			<partner>margin</partner>
+			<partner>padding</partner>
 		</partners>
 	</Tag>
 	<Tag>
@@ -22,8 +32,17 @@
 		<description>Big Header</description>
 		<partners>
 			<partner>background</partner>
+			<partner>border-radius</partner>
+			<partner>border-style</partner>
 			<partner>color</partner>
+			<partner>display</partner>
+			<partner>font-family</partner>
+			<partner>font-size</partner>
+			<partner>font-weight</partner>
+			<partner>height</partner>
+			<partner>margin</partner>
 			<partner>padding</partner>
+			<partner>width</partner>
 		</partners>
 	</Tag>
 	<Tag>
@@ -36,6 +55,9 @@
 		<name>img</name>
 		<description>adds image with source text</description>
 		<partners>
+			<partner>alt</partner>
+			<partner>height</partner>
+			<partner>width</partner>
 		</partners>
 	</Tag>
 	<Tag>
@@ -43,10 +65,15 @@
 		<description>paragraph</description>
 		<partners>
 			<partner>background</partner>
+			<partner>border-radius</partner>
 			<partner>border-style</partner>
 			<partner>color</partner>
+			<partner>display</partner>
 			<partner>font-family</partner>
+			<partner>font-weight</partner>
+			<partner>height</partner>
 			<partner>padding</partner>
+			<partner>width</partner>
 		</partners>
 	</Tag>
 	<Tag>

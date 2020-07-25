@@ -1,8 +1,16 @@
 <Attribues>
 	<Attribue>
+		<name>alt</name>
+		<description>specifies alternate text if image cannot be displayed</description>
+		<partners>
+			<partner>img</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
 		<name>background</name>
 		<description>controls background color</description>
 		<partners>
+			<partner>div</partner>
 			<partner>h1</partner>
 			<partner>p</partner>
 		</partners>
@@ -11,12 +19,18 @@
 		<name>border-radius</name>
 		<description>controls natures of an elements corners</description>
 		<partners>
+			<partner>div</partner>
+			<partner>h1</partner>
+			<partner>p</partner>
 		</partners>
 	</Attribue>
 	<Attribue>
 		<name>border-style</name>
 		<description>Specifies the style of the border (dotted or dashed or solid or etc)</description>
 		<partners>
+			<partner>button</partner>
+			<partner>div</partner>
+			<partner>h1</partner>
 			<partner>p</partner>
 		</partners>
 	</Attribue>
@@ -29,9 +43,45 @@
 		</partners>
 	</Attribue>
 	<Attribue>
+		<name>display</name>
+		<description>specifies the display type (rending box) of an element</description>
+		<partners>
+			<partner>div</partner>
+			<partner>h1</partner>
+			<partner>p</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
 		<name>font-family</name>
 		<description>Controls Font Type Used</description>
 		<partners>
+			<partner>h1</partner>
+			<partner>p</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>font-size</name>
+		<description>controls the font-size</description>
+		<partners>
+			<partner>div</partner>
+			<partner>h1</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>font-weight</name>
+		<description>sets how tick or thin characters should be</description>
+		<partners>
+			<partner>div</partner>
+			<partner>h1</partner>
+			<partner>p</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>height</name>
+		<description>controls height of element</description>
+		<partners>
+			<partner>h1</partner>
+			<partner>img</partner>
 			<partner>p</partner>
 		</partners>
 	</Attribue>
@@ -39,12 +89,22 @@
 		<name>margin</name>
 		<description>adds blank space around box</description>
 		<partners>
+			<partner>div</partner>
+			<partner>h1</partner>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>onclick</name>
+		<description>specifies a function to fire on a mouseclick on an element</description>
+		<partners>
+			<partner>button</partner>
 		</partners>
 	</Attribue>
 	<Attribue>
 		<name>padding</name>
 		<description>adds space inside a box with only background of said box</description>
 		<partners>
+			<partner>div</partner>
 			<partner>h1</partner>
 			<partner>p</partner>
 		</partners>
@@ -53,6 +113,15 @@
 		<name>position</name>
 		<description>Controls How placement is read (can also "fix" an elemeent)</description>
 		<partners>
+		</partners>
+	</Attribue>
+	<Attribue>
+		<name>width</name>
+		<description> controls width of element</description>
+		<partners>
+			<partner>h1</partner>
+			<partner>img</partner>
+			<partner>p</partner>
 		</partners>
 	</Attribue>
 </Attribues>
