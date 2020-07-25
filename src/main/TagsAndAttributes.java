@@ -23,24 +23,44 @@ public class TagsAndAttributes {
 			nextAction = input.nextLine().toLowerCase();
 			
 			switch(nextAction) {
+				case "adda": 		addComponent(input, "attribute"); break;	
+				case "addt": 		addComponent(input,"tag"); break;
+				case "changead":	addComponentDescription(input, "attribute");break;
+				case "changetd":	addComponentDescription(input,"tag"); break;
+				case "combine":		combine(input); break;		
+				case "divorce":		divorce(input);break;
 				case "deletea":		delete(input, "attribute");break;
 				case "deletet":		delete(input, "tag");break;
+				case "showall":		showAll();break;
 				case "showa":		show(input, "attribute");break;
 				case "showt":		show(input, "tag");break;
-				case "showall":		showAll();break;
-				case "combine":		combine(input); break;
-				case "addt": 		addComponent(input,"tag"); break;
-				case "divorce":		divorce(input);break;
-				case "adda": 		addComponent(input, "attribute"); break;	
-				case "addtd":		addComponentDescription(input,"tag"); break;
-				case "addad":		addComponentDescription(input, "attribute");break;
+				case "showc":		showCommands();break;
 				case "done": 		isDone = true; break;
-				default: 			System.out.println("I do not recognize that command");
+				default: 			
+								System.out.println("I do not recognize that command");
+								System.out.println("Enter \"showc\" for a list of commands");
 			}
 		}
 		input.close();
 	}
 
+	private static void showCommands() {
+		System.out.println("Commands:\n");
+		System.out.println("adda: \t\t Add an Attribute");
+		System.out.println("addt: \t\t Add a tag");
+		System.out.println("changead: \t change an attribute's description");
+		System.out.println("changetd: \t change a tag's description");
+		System.out.println("combine: \t combine a tag and an attribute");
+		System.out.println("divorce: \t seperate a connection between a tag and attribute");
+		System.out.println("deletea: \t deletes an attribute");
+		System.out.println("deletet: \t deletes a tag");
+		System.out.println("showall: \t shows a list of all tags and attributes");
+		System.out.println("showa: \t\t shows a single attribute in detail");
+		System.out.println("showt: \t\t show a single tag in detail");
+		System.out.println("showc: \t\t shows a list of commands");
+		System.out.println("done: \t\t ends the program");
+		System.out.println("\n");
+	}
 	
 
 	@SuppressWarnings("unchecked")
