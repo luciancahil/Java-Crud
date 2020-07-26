@@ -14,15 +14,11 @@ public class TagsAndAttributes {
 	private static Connection conn = null;
 	private static Statement stmt = null;
 	
-	public static void main(String[] args) throws IOException {
-		try {
-			loginSQL();
-		} catch (IOException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void main(String[] args) throws IOException, SQLException {
+		loginSQL();
 		readXML();
 		inputs();
+		writeSQL();
 		writeXML();
 	}
 	
@@ -468,25 +464,36 @@ public class TagsAndAttributes {
         String password = passR.readLine();
         
         conn = DriverManager.getConnection(url1, user, password);
+        stmt = conn.createStatement();        
         
-        if(conn != null) {
-        	System.out.println("Connected!");
-        }
         
-        stmt = conn.createStatement();
-        System.out.println();
-        test();
         
         passR.close();
 	}
 	
-	private static void test() {
-		String s = "DROP TABLE dummy";
-		try {
-			stmt.executeUpdate(s);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	private static void test() throws SQLException {
+		String s = "INSERT INTO atts VALUES ('testName', 'testDesc')";
+		stmt.execute(s);
 	}
+	
+	private static void writeSQL() throws SQLException {
+		String sql;
+
+		for(Attribute a: attributes) {
+			sql = "INSERT INTO atts VALUES ('" + a.getName() + "', '" + a.getDescription() + "')";
+			stmt.execute(sql);
+		}
+		
+		for(Tag t: tags) {
+			sql = "INSERT INTO tags VALUES ('" + t.getName() + "', '" + t.getDescription() + "')";
+			stmt.execute(sql);
+			for(Attribute a: t.getPartners()) {
+				sql = "INSERT INTO partners VALUES ('" + t.getName() + "', '" + a.getName() + "')";
+				stmt.execute(sql);
+			}
+		}
+		
+		
+	}
+
 }
