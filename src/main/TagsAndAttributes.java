@@ -1,13 +1,26 @@
 package main;
 import main.components.*;
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 
-public class TagsAndAttributes {
-	static ArrayList<Tag> tags = new ArrayList<Tag>();
-	static ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 
+public class TagsAndAttributes {
+	private static ArrayList<Tag> tags = new ArrayList<Tag>();
+	private static ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+	private static Connection conn = null;
+	private static Statement stmt = null;
+	
 	public static void main(String[] args) throws IOException {
+		try {
+			loginSQL();
+		} catch (IOException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		readXML();
 		inputs();
 		writeXML();
@@ -443,5 +456,37 @@ public class TagsAndAttributes {
 		}
 		bw.write("\t\t</partners>\n");
 		bw.write("\t</" + type + ">\n");
+	}
+	
+		
+	private static void loginSQL() throws IOException, SQLException {
+		FileReader pass = new FileReader("Password.txt");
+		BufferedReader passR = new BufferedReader(pass);
+		
+		String url1 = "jdbc:mysql://localhost:3306/tagsandatts";
+        String user = "root";
+        String password = passR.readLine();
+        
+        conn = DriverManager.getConnection(url1, user, password);
+        
+        if(conn != null) {
+        	System.out.println("Connected!");
+        }
+        
+        stmt = conn.createStatement();
+        System.out.println();
+        test();
+        
+        passR.close();
+	}
+	
+	private static void test() {
+		String s = "DROP TABLE dummy";
+		try {
+			stmt.executeUpdate(s);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
