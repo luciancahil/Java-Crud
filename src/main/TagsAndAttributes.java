@@ -17,9 +17,10 @@ public class TagsAndAttributes {
 	
 	public static void main(String[] args) throws IOException, SQLException {
 		loginSQL();
-		readXML();
+		
+		//readXML();
 		inputs();
-		writeXML();
+		//writeXML();
 	}
 	
 	private static void inputs() throws SQLException{
@@ -34,8 +35,8 @@ public class TagsAndAttributes {
 			switch(nextAction) {
 				case "adda": 		addComponent(input, "attribute"); break;	
 				case "addt": 		addComponent(input,"tag"); break;
-				case "changead":	addComponentDescription(input, "attribute");break;
-				case "changetd":	addComponentDescription(input,"tag"); break;
+				case "changead":	changeComponentDescription(input, "att");break;
+				case "changetd":	changeComponentDescription(input,"tag"); break;
 				case "combine":		combine(input); break;		
 				case "divorce":		divorce(input);break;
 				case "deletea":		delete(input, "attribute");break;
@@ -286,7 +287,7 @@ public class TagsAndAttributes {
 		findOrder(component, type);
 	}
 
-	private static void addComponentDescription(Scanner input,String type) {
+	private static void changeComponentDescription(Scanner input,String type) throws SQLException {
 		String fullText;
 		String componentName;
 		String description;
@@ -294,9 +295,10 @@ public class TagsAndAttributes {
 		Component component;
 		
 		while(!isDone) {
-			System.out.println("What " + type + " description do you wish to add?");
+			System.out.println("What " + type + " description do you wish to change?");
 			fullText = input.nextLine();
 			int colonPlace = fullText.indexOf(':');
+			ResultSet rs;
 			
 			if(fullText.equals("exit")) {
 				break;
@@ -315,12 +317,20 @@ public class TagsAndAttributes {
 				continue;
 			}
 			
-			if(component == null) {
+			
+			//check if the component is found
+			
+			String sql = "SELECT COUNT(*) FROM " + type + "s WHERE " + type + "_name = '" + componentName + "'";
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			
+			if(rs.getInt(1) == 0) {
 				System.out.println(type + " not found");
 				continue;
 			}
 			
-			component.setDescription(description);
+			sql = "UPDATE " + type + "s SET " + type + "_description = '" + description  + "' WHERE " + type + "_name='" + componentName + "'";
+			stmt.execute(sql);
 			isDone = true;
 		}
 	}
@@ -495,30 +505,4 @@ public class TagsAndAttributes {
         
         passR.close();
 	}
-	
-	private static void test() throws SQLException {
-		String s = "INSERT INTO atts VALUES ('testName', 'testDesc')";
-		stmt.execute(s);
-	}
-	
-	private static void writeSQL() throws SQLException {
-		String sql;
-
-		for(Attribute a: attributes) {
-			sql = "INSERT INTO atts VALUES ('" + a.getName() + "', '" + a.getDescription() + "')";
-			stmt.execute(sql);
-		}
-		
-		for(Tag t: tags) {
-			sql = "INSERT INTO tags VALUES ('" + t.getName() + "', '" + t.getDescription() + "')";
-			stmt.execute(sql);
-			for(Attribute a: t.getPartners()) {
-				sql = "INSERT INTO partners VALUES ('" + t.getName() + "', '" + a.getName() + "')";
-				stmt.execute(sql);
-			}
-		}
-		
-		
-	}
-
 }
