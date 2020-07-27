@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.*;
 
@@ -16,11 +17,11 @@ public class TagsAndAttributes {
 	private static Statement stmt = null;
 	
 	public static void main(String[] args) throws IOException, SQLException {
-		loginSQL();
 		
-		//readXML();
+		loginSQL();	
+		readXML();
 		inputs();
-		//writeXML();
+		writeXML();
 	}
 	
 	private static void inputs() throws SQLException{
@@ -33,7 +34,7 @@ public class TagsAndAttributes {
 			nextAction = input.nextLine().toLowerCase();
 			
 			switch(nextAction) {
-				case "adda": 		addComponent(input, "attribute"); break;	
+				case "adda": 		addComponent(input, "att"); break;	
 				case "addt": 		addComponent(input,"tag"); break;
 				case "changead":	changeComponentDescription(input, "att");break;
 				case "changetd":	changeComponentDescription(input,"tag"); break;
@@ -240,17 +241,21 @@ public class TagsAndAttributes {
 		
 	}
 	
-	private static void addComponent(Scanner input, String type) {
+	private static void addComponent(Scanner input, String type) throws SQLException {
 		String name = null, description = null;
-		Component component;
 		boolean invalid = true;
 		int colonPlace;
 		String fullText;
+		String sql;
 		
 		while(invalid) {
 			System.out.println("What " + type + " would you like to add?");
 			fullText = input.nextLine();
 			colonPlace = fullText.indexOf(':');
+			
+			if(fullText.toUpperCase().equals("NONE"))
+				return;
+			
 			
 			if(colonPlace == -1) {
 				System.out.println("Please use the format [tagName]:[description] (no spaces around colon)\n");
@@ -263,28 +268,18 @@ public class TagsAndAttributes {
 			invalid = isInvalid(name);
 			invalid = isInvalid(description);
 			
-			if(name.toUpperCase().equals("NONE")) {
-				return;
+			
+			sql = "INSERT INTO " + type + "s VALUES('" + name + "', '" + description + "')";
+			try {
+				stmt.execute(sql);
+			}catch (SQLIntegrityConstraintViolationException e) {
+				System.out.println(type + " already contained");
+				invalid = true;
 			}
 			
 		}
 		
-		if(type.equals("tag")) {
-			component = new Tag(name);
-		}else {
-			component = new Attribute(name);
-		}
 		
-		if(tags.contains(component)||attributes.contains(component)) {
-			System.out.println(type + " " + name + " already exists");
-			try {
-				return;
-			}catch(Exception e) {}
-		}
-		
-		component.setDescription(description);
-		
-		findOrder(component, type);
 	}
 
 	private static void changeComponentDescription(Scanner input,String type) throws SQLException {
@@ -292,7 +287,6 @@ public class TagsAndAttributes {
 		String componentName;
 		String description;
 		boolean isDone = false;
-		Component component;
 		
 		while(!isDone) {
 			System.out.println("What " + type + " description do you wish to change?");
@@ -311,7 +305,6 @@ public class TagsAndAttributes {
 			
 			componentName = fullText.substring(0, colonPlace);
 			description = fullText.substring(colonPlace+1);
-			component = getComponent(componentName,type);	
 			
 			if(isInvalid(description)) {
 				continue;
@@ -366,7 +359,7 @@ public class TagsAndAttributes {
 	}
 	
 	private static boolean isInvalid(String check) {
-		String[] illegals = {"#", ":", ";", "[", "]", ","};
+		String[] illegals = {"#", ":", ";", "[", "]", ",", "'"};
 		for(String illegal: illegals) {
 			if(check.contains(illegal)) {
 				System.out.println("ERROR! Cannot contain {\"#\", \":\", \";\", \"[\", \"]\", \",\"}");
