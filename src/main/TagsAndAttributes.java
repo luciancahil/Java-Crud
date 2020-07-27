@@ -1,5 +1,4 @@
 package main;
-import main.components.*;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,17 +10,13 @@ import java.util.*;
 
 
 public class TagsAndAttributes {
-	private static ArrayList<Tag> tags = new ArrayList<Tag>();
-	private static ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 	private static Connection conn = null;
 	private static Statement stmt = null;
 	
 	public static void main(String[] args) throws IOException, SQLException {
 		
 		loginSQL();	
-		readXML();
 		inputs();
-		writeXML();
 	}
 	
 	private static void inputs() throws SQLException{
@@ -269,7 +264,6 @@ public class TagsAndAttributes {
 				continue;
 			}
 			
-			break;
 			stmt.execute(sql);
 		}
 
@@ -406,119 +400,6 @@ public class TagsAndAttributes {
 		
 		return false;
 	}
-	
-	private static Component getComponent(String tagName, String type) {
-		Component retrieving = new Component(tagName);
-		if(type.contentEquals("tag")) {
-			int index = tags.indexOf(retrieving);
-			try {
-				retrieving = tags.get(index);
-			}catch(ArrayIndexOutOfBoundsException e) {
-				return null;
-			}
-		}else {
-			int index = attributes.indexOf(retrieving);
-			try {
-				retrieving = attributes.get(index);
-			}catch(ArrayIndexOutOfBoundsException e) {
-				return null;
-			}
-		}
-		
-		return retrieving;
-	}
-	
-	private static void readXML() throws IOException {
-		FileReader frTag = new FileReader("Tags.xml");
-		FileReader frAtt = new FileReader("Attributes.xml");
-		BufferedReader tagBR = new BufferedReader(frTag);
-		BufferedReader atts = new BufferedReader(frAtt);
-		
-		tagBR.readLine();			//removes the top <Tags> 
-		atts.readLine();			//removes the top <Attributes>
-		
-		
-		//reading the attributes file
-		while(!atts.readLine().equalsIgnoreCase("</Attribues>")) {	//removes <Attributes> tag at top of document
-			String nameLine = atts.readLine();
-			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
-			String descLine = atts.readLine();
-			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
-			
-			Attribute a = new Attribute(nameLine);
-			a.setDescription(descLine);
-			
-			attributes.add(a);
-			
-			while(!atts.readLine().equals("\t\t</partners>")) {
-			}
-			atts.readLine();	//</Attribute>
-		}
-
-		//reading the tags file and combining partners
-		while(!tagBR.readLine().equalsIgnoreCase("</Tags>")) {	//removes <Attribute>
-			String nameLine = tagBR.readLine();
-			nameLine = nameLine.substring(nameLine.indexOf('>') + 1, nameLine.lastIndexOf('<'));
-			String descLine = tagBR.readLine();
-			descLine = descLine.substring(descLine.indexOf('>') + 1, descLine.lastIndexOf('<'));
-			String partner;
-			
-			
-			Tag t = new Tag(nameLine);
-			t.setDescription(descLine);
-			
-			tagBR.readLine();		//removes the <partner> tag
-			while(!(partner = tagBR.readLine()).equals("\t\t</partners>")) {
-				partner = partner.substring(partner.indexOf('>') + 1, partner.lastIndexOf('<'));
-				Attribute a = (Attribute) getComponent(partner, "at");
-				t.addAttribute(a);
-				a.addTag(t);
-			}
-			
-			tags.add(t);
-			tagBR.readLine();	//</Tag>
-		}
-		
-		tagBR.close();
-		atts.close();
-	}
-	
-	private static void writeXML() throws IOException {
-		FileWriter fwTag = new FileWriter("Tags.xml");
-		FileWriter fwAttribute = new FileWriter("Attributes.xml");
-		BufferedWriter tagFile = new BufferedWriter(fwTag);
-		BufferedWriter attributeFile = new BufferedWriter(fwAttribute);
-		
-		tagFile.write("<Tags>\n");
-		for(Tag tag: tags) {
-			writeXMLComponent(tag, "Tag", tagFile);
-		}
-		tagFile.write("</Tags>");
-		
-		attributeFile.write("<Attribues>\n");
-		for(Attribute attribute: attributes) {
-			writeXMLComponent(attribute, "Attribue", attributeFile);
-		}
-		attributeFile.write("</Attribues>");
-		
-		tagFile.close();
-		attributeFile.close();
-	}
-	
-	
-	
-	private static void writeXMLComponent(Component c, String type, BufferedWriter bw) throws IOException {
-		bw.write("\t<" + type + ">\n");
-		bw.write("\t\t<name>" + c.toString() + "</name>\n");
-		bw.write("\t\t<description>" + c.getDescription() + "</description>\n");
-		bw.write("\t\t<partners>\n");
-		for(Object partner: c.getPartners()) {
-			bw.write("\t\t\t<partner>" + partner.toString() + "</partner>\n");
-		}
-		bw.write("\t\t</partners>\n");
-		bw.write("\t</" + type + ">\n");
-	}
-	
 		
 	private static void loginSQL() throws IOException, SQLException {
 		FileReader pass = new FileReader("Password.txt");
