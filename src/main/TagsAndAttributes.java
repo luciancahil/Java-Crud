@@ -40,7 +40,7 @@ public class TagsAndAttributes {
 				case "changetd":	changeComponentDescription(input,"tag"); break;
 				case "combine":		combine(input); break;		
 				case "divorce":		divorce(input);break;
-				case "deletea":		delete(input, "attribute");break;
+				case "deletea":		delete(input, "att");break;
 				case "deletet":		delete(input, "tag");break;
 				case "showall":		showAll();break;
 				case "showa":		show(input, "att");break;
@@ -74,36 +74,51 @@ public class TagsAndAttributes {
 	}
 	
 
-	@SuppressWarnings("unchecked")
-	private static void delete(Scanner input, String type) {
+	private static void delete(Scanner input, String type) throws SQLException {
 		String name;
 		Component c;
+		boolean valid = false;
 		ArrayList<Component> partners;
+		String sql = "";
+		ResultSet rs;
+		char confirmation;
 		
-		System.out.println("Which " + type + " would you like to delete?");
-		name = input.nextLine();
-		
-		c = getComponent(name, type);
-		
-		if(c == null) {
-			System.out.println(name + " is not a valid " + type + ".");
-			return;
+		while(!valid) {
+			System.out.println("Which " + type + " would you like to delete?");
+			name = input.nextLine();
+			
+			if(name.toUpperCase().equals("NONE"))
+				return;
+			
+			if(isInvalid(name))
+				continue;
+			
+			sql = "SELECT COUNT(*) FROM " + type + "s WHERE " + type + "_name = '" + name + "'";
+			
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			
+			
+			if(rs.getInt(1) == 0) {
+				System.out.println(type + " " + name + "does not exist.");
+				continue;
+			}
+			
+			System.out.println("Are you sure you want to delete " + name + "(y/n)?");
+			
+			confirmation = input.nextLine().charAt(0);
+			
+			if(confirmation != 'y') {
+				continue;
+			}
+			
+			sql = "DELETE FROM " + type + "s WHERE " + type + "_name = '" + name + "'";
+			stmt.execute(sql);
+			
+			
+			sql = "DELETE FROM partners WHERE " + type + "_name = '" + name + "'";
+			stmt.execute(sql);
 		}
-		
-		
-		//remove the tag from it's partners lists
-		partners = c.getPartners();
-		
-		for(Component partner: partners) {
-			partner.getPartners().remove(c);
-		}
-		
-		if(type.equals("tag"))
-			tags.remove(c);
-		else
-			attributes.remove(c);
-		
-		System.out.println(name + " has been removed.");
 	}
 	
 	private static void show(Scanner input, String type) throws SQLException {
@@ -371,36 +386,6 @@ public class TagsAndAttributes {
 			stmt.execute(sql);
 			isDone = true;
 		}
-	}
-	
-	
-	
-
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static void findOrder(Component c, String type) {
-		String name = c.getName();
-		boolean added = false;
-		
-		ArrayList list;
-		if(type.equals("tag")){
-			list = tags;
-		}else {
-			list = attributes;
-		}
-		int size = list.size();
-		
-		for(int i = 0; i<size; i ++) {//adds to the list in alphabetical order
-			if(name.compareToIgnoreCase(((Component)list.get(i)).getName())<0) {
-				list.add(i, c);
-				added = true;
-				break;
-			}
-		}
-		
-		if(!added) {			//adds to the end of the list if it is the last alphabetically
-			list.add(c);
-		}		
 	}
 	
 	private static boolean isInvalid(String check) {
