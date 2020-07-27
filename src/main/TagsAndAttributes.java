@@ -250,7 +250,7 @@ public class TagsAndAttributes {
 				continue;
 			}
 			
-			sql = "SELECT COUNT(*) FROM atts WHERE att_name = '" + attributeString + "'";	//check tag exists
+			sql = "SELECT COUNT(*) FROM atts WHERE att_name = '" + attributeString + "'";	//check att exists
 			rs = stmt.executeQuery(sql);
 			rs.next();
 			
@@ -260,7 +260,16 @@ public class TagsAndAttributes {
 			}
 			
 			
-			System.out.println(sql);
+			sql = "SELECT COUNT(*) FROM partners WHERE att_name = '" + attributeString + "' AND tag_name = '" + tagString + "'";	//check att exists
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			
+			if(rs.getInt(1) != 0) {
+				System.out.println(tagString + " " + attributeString + " are already partnered.");
+				continue;
+			}
+			
+			break;
 			stmt.execute(sql);
 		}
 
