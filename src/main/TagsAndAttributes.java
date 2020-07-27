@@ -43,7 +43,7 @@ public class TagsAndAttributes {
 				case "deletea":		delete(input, "attribute");break;
 				case "deletet":		delete(input, "tag");break;
 				case "showall":		showAll();break;
-				case "showa":		show(input, "attribute");break;
+				case "showa":		show(input, "att");break;
 				case "showt":		show(input, "tag");break;
 				case "showc":		showCommands();break;
 				case "done": 		isDone = true; break;
@@ -106,23 +106,68 @@ public class TagsAndAttributes {
 		System.out.println(name + " has been removed.");
 	}
 	
-	private static void show(Scanner input, String type) {
-		Component c;
+	private static void show(Scanner input, String type) throws SQLException {
 		String name;
+		ResultSet rs;
+		String sql;
+		boolean valid = false;
+		String output = "";
+		String partnerType;
 		
-		System.out.println("Which " + type + " would you like to show?");
-		name = input.nextLine();
-		
-		c = getComponent(name, type);
-		
-		if(c == null) {
-			System.out.println(name + " is not a valid " + type + ".");
-			return;
+		if(type.equals("tag")) {
+			partnerType = "att";
+		}else if (type.equals("att")) {
+			partnerType = "tag";
+		}else{
+			throw new IllegalArgumentException();
 		}
 		
-		System.out.println(c.detailedOutput());
+		while(!valid) {
+			System.out.println("Which " + type + " would you like to show?");
+			name = input.nextLine();
+			System.out.println();
+			
+			
+			if(name.toUpperCase().equals("NONE"))
+				return;
+			
+			if(isInvalid(name))
+				continue;
+			
+			
+			sql = "SELECT " + type + "_description FROM " + type + "s WHERE " + type + "_name = '" + name + "'";
+			rs = stmt.executeQuery(sql);
+			
+			if(!rs.next()) {
+				System.out.println(type + " " + name + " is invalid.");
+				continue;
+			}
+			
+			output += name + ": " + rs.getString(1) + "\n";
+			
+			sql = "SELECT " + partnerType + "_name FROM partners WHERE " + type + "_name = '" + name + "'";
+			rs = stmt.executeQuery(sql);
+			
+			if(!rs.next())
+				break;
+			
+			if(partnerType.equals("att")) {
+				output += "Attribute Partners: ";
+			}else {
+				output += "Tag Partners: ";
+			}
+			
+			output += rs.getString(1);
+			
+			while(rs.next()) {
+				output += ", " + rs.getString(1);
+			}
+			
+			valid = true;
+		}
 		
-		
+		System.out.println(output);
+		System.out.println();
 	}
 	
 	private static void showAll() throws SQLException {
