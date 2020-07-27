@@ -3,6 +3,7 @@ import main.components.*;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
@@ -18,11 +19,10 @@ public class TagsAndAttributes {
 		loginSQL();
 		readXML();
 		inputs();
-		writeSQL();
 		writeXML();
 	}
 	
-	private static void inputs(){
+	private static void inputs() throws SQLException{
 		Scanner input = new Scanner(System.in);
 		boolean isDone = false;
 		String nextAction;
@@ -123,9 +123,34 @@ public class TagsAndAttributes {
 		
 	}
 	
-	private static void showAll() {
-		System.out.println("Tags: " + tags);
-		System.out.println("Attributes " + attributes);
+	private static void showAll() throws SQLException {
+		String tagSQL = "SELECT tag_name FROM tags";
+		String attSQL = "SELECT att_name FROM atts";
+		String tags = "[";
+		String atts = "[";
+		ResultSet rs;
+		
+		rs = stmt.executeQuery(tagSQL);//get all tag names
+		rs.next();							//remove the 0
+		tags += rs.getString(1);			//add the first element
+
+		while(rs.next())
+			tags += ", " + rs.getString("tag_name");
+		
+		rs = stmt.executeQuery(attSQL);
+		
+		rs.next();
+		atts += rs.getString(1);
+		
+		while(rs.next()) {
+			atts+= ", " + rs.getString("att_name");
+		}
+		
+		atts += "]";
+		tags += "]";
+		
+		System.out.println(tags);
+		System.out.println(atts);
 	}
 
 	private static void combine(Scanner input) {//adds a tag and an attribute to each other
