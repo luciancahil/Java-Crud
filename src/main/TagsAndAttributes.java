@@ -260,7 +260,6 @@ public class TagsAndAttributes {
 			}
 			
 			
-			sql= "INSERT INTO partners VALUES ('" + tagString + "', '" + attributeString+"')";
 			System.out.println(sql);
 			stmt.execute(sql);
 		}
@@ -268,15 +267,13 @@ public class TagsAndAttributes {
 		
 	}
 	
-	private static void divorce(Scanner input) {
-		Tag t;
-		Attribute a;
-		String fullText;
+	private static void divorce(Scanner input) throws SQLException {
+		String fullText, tagName, attName, sql;
 		int colonPlace;
 		boolean isDone = false;
 		
 		while(!isDone) {
-			System.out.println("What would you like to divorce?");
+			System.out.println("What would you like to divorce?\n(Enter \"exit\" to exit)");
 			fullText = input.nextLine();
 			
 			if(fullText.equals("exit")) {
@@ -288,26 +285,16 @@ public class TagsAndAttributes {
 				System.out.println("Please Use the Format tag:attribute");
 				return;
 			}
-			t = (Tag)getComponent(fullText.substring(0, colonPlace),"tag");
-			a = (Attribute)getComponent(fullText.substring(colonPlace+1),"attribute");
 			
-			if(t== null) {
-				System.out.println(t + " isn't a valid tag.");
-			}
+			tagName = fullText.substring(0, colonPlace);
+			attName = fullText.substring(colonPlace+1);
 			
-			if(a == null) {
-				System.out.println(a + " isn't a valid tag.");
-			}
-			
-			if(t.getPartners().indexOf(a) == -1){
-				System.out.println(t + " isn't matched with " + a + ".");
+			if(isInvalid(tagName) || isInvalid(attName)) {
 				continue;
 			}
-
-			t.getPartners().remove(a);
-			a.getPartners().remove(t);
 			
-			isDone = true;
+			sql = "DELETE FROM partners WHERE tag_name = '" + tagName + "' AND att_name = '" + attName + "'";
+			stmt.execute(sql);
 		}
 		
 	}
