@@ -76,9 +76,7 @@ public class TagsAndAttributes {
 
 	private static void delete(Scanner input, String type) throws SQLException {
 		String name;
-		Component c;
 		boolean valid = false;
-		ArrayList<Component> partners;
 		String sql = "";
 		ResultSet rs;
 		char confirmation;
@@ -215,21 +213,22 @@ public class TagsAndAttributes {
 		System.out.println(atts);
 	}
 
-	private static void combine(Scanner input) {//adds a tag and an attribute to each other
+	private static void combine(Scanner input) throws SQLException {//adds a tag and an attribute to each other
 		String fullText;
 		int colonPlace;
 		String tagString;
 		String attributeString;
-		Tag tag;
-		Attribute attribute;
 		boolean isDone = false;
+		String sql;
+		ResultSet rs;
 		
 		while(!isDone) {
-			System.out.println("What would you like to combine?");
+			System.out.println("What would you like to combine? \n(Enter \"exit\" to exit)");
 			fullText = input.nextLine();
 			if(fullText.equals("exit")) {
 				break;
 			}
+			
 			colonPlace = fullText.indexOf(':');
 			if(colonPlace == -1) {
 				System.out.println("Please Use the Format tag:attribute");
@@ -237,24 +236,36 @@ public class TagsAndAttributes {
 			}
 			tagString = fullText.substring(0, colonPlace);
 			attributeString = fullText.substring(colonPlace+1);
-			tag = (Tag)getComponent(tagString,"tag");
-			attribute = (Attribute)getComponent(attributeString,"attribute");
 			
-			if(tag==null) {
-				System.out.println("Tag not found");
-				continue;
-			}else if(attribute == null) {
-				System.out.println("Attribute not found");
-				continue;
-			}else if(tag.contains(attribute)) {
-				System.out.println(tag + " already contains " + attribute);
+			if(isInvalid(tagString) || isInvalid(attributeString)) {
 				continue;
 			}
 			
-			tag.addAttribute(attribute);
-			attribute.addTag(tag);
-			isDone = true;
+			sql = "SELECT COUNT(*) FROM tags WHERE tag_name = '" + tagString + "'";	//check tag exists
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			
+			if(rs.getInt(1) == 0) {
+				System.out.println("Tag " + tagString + " doesn't exist.");
+				continue;
+			}
+			
+			sql = "SELECT COUNT(*) FROM atts WHERE att_name = '" + attributeString + "'";	//check tag exists
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			
+			if(rs.getInt(1) == 0) {
+				System.out.println("Attribute " + attributeString + " doesn't exist.");
+				continue;
+			}
+			
+			
+			sql= "INSERT INTO partners VALUES ('" + tagString + "', '" + attributeString+"')";
+			System.out.println(sql);
+			stmt.execute(sql);
 		}
+
+		
 	}
 	
 	private static void divorce(Scanner input) {
